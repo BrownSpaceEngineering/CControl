@@ -4,10 +4,14 @@ project(CControl)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+set(CMAKE_C_COMPILER "arm-none-eabi-gcc")
+
+message("-- [INFO] building with: ${CMAKE_C_COMPILER}")
+
 # MinGW är inte kompatibel med Intel MKL!
 if(MINGW)
     message(STATUS "MinGW detected - MKL will be disabled.")
-else()
+elseif(MSVC)
     # Leta efter MKL (ej REQUIRED, vi hanterar fallback)
     set(MKL_LINK "static")
     set(MKL_THREADING "sequential")   # Viktigt om du vill ha sekventiell MKL
@@ -35,7 +39,7 @@ else()
 endif()
 
 # Skapa exekverbart mål
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_library(${PROJECT_NAME} ${SOURCES})
 
 # Lägg till include paths automatiskt (baserat på .h-filer)
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/**/*.h")
